@@ -145,7 +145,21 @@ Use the dashboard to experiment with different profiles and asset selections to 
                 col1, col2 = st.columns(2)
                 with col1:
                     st.markdown('**Asset Allocation - Mean-Variance Allocation**')
-                    st.plotly_chart(go.Figure([go.Bar(x=Alloc.index, y=Alloc.iloc[:, 0], marker=dict(color='#1f77b4'))]), use_container_width=True)
+                    bar_fig = go.Figure([go.Bar(
+                        x=Alloc.index,
+                        y=Alloc.iloc[:, 0],
+                        marker=dict(color='#1f77b4'),
+                        text=[f'{v:.2%}' for v in Alloc.iloc[:, 0]],
+                        textposition='outside',
+                    )])
+                    bar_fig.update_layout(
+                        yaxis_title='Allocation Weight',
+                        xaxis_title='Asset',
+                        uniformtext_minsize=8,
+                        uniformtext_mode='hide',
+                        margin=dict(t=40)
+                    )
+                    st.plotly_chart(bar_fig, use_container_width=True)
                 with col2:
                     st.markdown('**Portfolio value of $100 investment**')
                     st.plotly_chart(go.Figure([go.Scatter(x=returns_sum_pd.index, y=returns_sum_pd.iloc[:, 0], marker=dict(color='#ff7f0e'))]), use_container_width=True)
