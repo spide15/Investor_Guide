@@ -1,0 +1,7 @@
+# List of required libraries for the Streamlit dashboard
+streamlit
+pandas
+numpy
+plotly
+cvxopt
+scikit-learn
