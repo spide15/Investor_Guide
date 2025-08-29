@@ -138,24 +138,22 @@ Use the dashboard to experiment with different profiles and asset selections to 
         st.session_state['risk_tolerance'] = risk_tolerance
         st.session_state['selected_assets'] = selected_assets
         st.success(f'Predicted Risk Tolerance: {risk_tolerance:.2f}')
+        st.info(f"**Risk Tolerance (0-1):** {risk_tolerance:.2f}")
+        if selected_assets:
+            Alloc, returns_sum_pd = get_asset_allocation(risk_tolerance, selected_assets, assets)
+            if Alloc is not None and returns_sum_pd is not None:
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.markdown('**Asset Allocation - Mean-Variance Allocation**')
+                    st.plotly_chart(go.Figure([go.Bar(x=Alloc.index, y=Alloc.iloc[:, 0], marker=dict(color='#1f77b4'))]), use_container_width=True)
+                with col2:
+                    st.markdown('**Portfolio value of $100 investment**')
+                    st.plotly_chart(go.Figure([go.Scatter(x=returns_sum_pd.index, y=returns_sum_pd.iloc[:, 0], marker=dict(color='#ff7f0e'))]), use_container_width=True)
+            else:
+                st.info('Try adjusting your asset selection or risk tolerance for a feasible portfolio.')
     else:
         risk_tolerance = st.session_state.get('risk_tolerance', 0.5)
         selected_assets = st.session_state.get('selected_assets', [asset_map[l] for l in default_assets])
-
-    st.info(f"**Risk Tolerance (0-1):** {risk_tolerance:.2f}")
-
-    if selected_assets:
-        Alloc, returns_sum_pd = get_asset_allocation(risk_tolerance, selected_assets, assets)
-        if Alloc is not None and returns_sum_pd is not None:
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown('**Asset Allocation - Mean-Variance Allocation**')
-                st.plotly_chart(go.Figure([go.Bar(x=Alloc.index, y=Alloc.iloc[:, 0], marker=dict(color='#1f77b4'))]), use_container_width=True)
-            with col2:
-                st.markdown('**Portfolio value of $100 investment**')
-                st.plotly_chart(go.Figure([go.Scatter(x=returns_sum_pd.index, y=returns_sum_pd.iloc[:, 0], marker=dict(color='#ff7f0e'))]), use_container_width=True)
-        else:
-            st.info('Try adjusting your asset selection or risk tolerance for a feasible portfolio.')
 
 if __name__ == '__main__':
     main()
