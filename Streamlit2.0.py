@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objs as go
 from pickle import load
+import os
 import cvxopt as opt
 from cvxopt import solvers
 
@@ -24,7 +25,8 @@ def load_asset_data():
 
 @st.cache_data
 def load_model():
-    return load(open('finalized_model.sav', 'rb'))
+    model_path = os.path.join(os.path.dirname(__file__), 'finalized_model.sav')
+    return load(open(model_path, 'rb'))
 
 # --- Prediction and Optimization Functions ---
 def predict_risk_tolerance(model, X_input):
